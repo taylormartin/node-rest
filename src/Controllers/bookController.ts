@@ -2,7 +2,7 @@ import {Router, Request, Response, NextFunction } from 'express';
 
 let bookController = (Book: any) => {
 
-  let post = (req: Request, res: Response) => {
+  let post = (req: any, res: any) => {
     let book = new Book(req.body);
     if (!req.body.title) {
       res.status(400);

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec --compilers ts:ts-node/register 'test/**/*.test.ts'"
+    "test": "mocha --reporter spec --compilers ts:ts-node/register 'src/Tests/*.test.ts'"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,9 @@
     "@types/mocha": "^2.2.40",
     "@types/mongoose": "^4.7.9",
     "@types/node": "^7.0.12",
+    "@types/should": "^8.1.30",
+    "@types/sinon": "^2.1.2",
+    "@types/supertest": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-env": "^0.4.0",
     "gulp-mocha": "^4.3.0",
