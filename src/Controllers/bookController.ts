@@ -1,7 +1,9 @@
-var bookController = function(Book) {
+import {Router, Request, Response, NextFunction } from 'express';
 
-  var post = function(req, res){
-    var book = new Book(req.body);
+let bookController = (Book: any) => {
+
+  let post = (req: Request, res: Response) => {
+    let book = new Book(req.body);
     if (!req.body.title) {
       res.status(400);
       res.send('Title is required');
@@ -11,18 +13,18 @@ var bookController = function(Book) {
     res.send(book);
   };
 
-  var get = function(req, res) {
-    var query = {};
+  let get = (req: Request, res: Response) => {
+    let query: any = {};
     if(req.query.genre) {
       query.genre = req.query.genre;
     }
-    Book.find(query, function(err, books){
+    Book.find(query, (err: Error, books: Array<any>) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        var returnBooks = [];
+        let returnBooks: Array<any> = [];
         books.forEach(function(element, index, array) {
-          var newBook = element.toJSON(); 
+          let newBook = element.toJSON(); 
           newBook.links = {
             self: 'http://' + req.headers.host + '/api/books/' + newBook._id
           };
@@ -40,4 +42,4 @@ var bookController = function(Book) {
 
 };
 
-module.exports = bookController;
+export default bookController;

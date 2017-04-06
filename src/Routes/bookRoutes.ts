@@ -1,15 +1,16 @@
-var express = require('express');
+import {Router, Request, Response, NextFunction } from 'express';
+import bookController from '../Controllers/bookController';
 
-var routes = function(Book) {
-  var bookRouter = express.Router();
-  var bookController = require('../Controllers/bookController')(Book);
+let routes = (Book: any) => {
+  let bookRouter = Router();
+  let bookControllerWithBook = bookController(Book);
 
   bookRouter.route('/')
-    .post(bookController.post)
-    .get(bookController.get);
+    .post(bookControllerWithBook.post)
+    .get(bookControllerWithBook.get);
 
-  bookRouter.use('/:bookId', function(req, res, next) {
-    Book.findById(req.params.bookId, function(err, book) {
+  bookRouter.use('/:bookId', (req: any, res: Response, next: NextFunction) => {
+    Book.findById(req.params.bookId, (err: any, book: any) => {
       if (err) {
         res.status(500).send(err);
       } else if(book) {
@@ -22,20 +23,20 @@ var routes = function(Book) {
   });
 
   bookRouter.route('/:bookId')
-    .get(function(req,res) {
-      var returnBook = req.book.toJSON();
-      var genreLink = 'http://' + req.headers.host + '/api/books?genre=' + encodeURIComponent(returnBook.genre);
+    .get((req: any, res: Response) => {
+      let returnBook = req.book.toJSON();
+      let genreLink = 'http://' + req.headers.host + '/api/books?genre=' + encodeURIComponent(returnBook.genre);
       returnBook.link = {
         FilterByThisGenre: genreLink
       };
       res.json(returnBook);
     })
-    .put(function(req, res) {
+    .put((req: any, res: Response) => {
       req.book.title = req.body.title;
       req.book.author = req.body.author;
       req.book.genre = req.body.genre;
       req.book.read = req.body.read;
-      req.book.save(function(err){
+      req.book.save((err: any) => {
         if (err) {
           res.status(500).send(err);
         } else {
@@ -43,22 +44,22 @@ var routes = function(Book) {
         }
       });
     })
-    .patch(function(req, res) {
+    .patch((req: any, res: Response) => {
       if (req.body._id) {
         delete req.body._id;
       }
-      for(var p in req.body) {
+      for(let p in req.body) {
         req.book[p] = req.body[p];
       }
-      req.book.save(function(err){
+      req.book.save((err: Error) => {
         if (err) {
           res.status(500).send(err);
         } else {
           res.json(req.book);
         }
       });
-    }).delete(function(req, res) {
-      req.book.remove(function(err) {
+    }).delete((req: any, res: Response) => {
+      req.book.remove((err: Error) => {
         if(err) {
           res.status(500).send(err);
         } else {
@@ -70,4 +71,4 @@ var routes = function(Book) {
   return bookRouter;
 };
 
-module.exports = routes;
+export default routes;

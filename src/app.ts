@@ -1,8 +1,10 @@
-var express = require('express'),
-    mongoose = require('mongoose'),
-    bodyParser = require('body-parser');
+import * as express from 'express';
+import * as mongoose from 'mongoose';
+import * as bodyParser from 'body-parser';
+import Book from './Models/Book';
+import bookRouter from './Routes/bookRoutes';
 
-var db;
+let db;
 
 if (process.env.ENV === 'Test') {
   db = mongoose.connect('mongodb://localhost/booksApi_test');
@@ -10,18 +12,14 @@ if (process.env.ENV === 'Test') {
   db = mongoose.connect('mongodb://localhost/booksApi');
 }
 
-var Book = require('./models/bookModel');
+let app = express();
 
-var app = express();
-
-var port = process.env.PORT || 3000;
-
-bookRouter = require('./Routes/bookRoutes')(Book);
+let port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use('/api/books', bookRouter);
+app.use('/api/books', bookRouter(Book));
 
 app.get('/', function(req, res) {
   res.send('welcome to my API!');
@@ -31,5 +29,4 @@ app.listen(port, function() {
   console.log('Running on PORT: ' + port);
 });
 
-module.exports = app;
-
+export default app;
